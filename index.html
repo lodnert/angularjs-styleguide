@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Angularjs-styleguide : AngularJS Style Guide: A starting point for AngularJS development teams to provide consistency through good practices.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Angularjs-styleguide</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/johnpapa/angularjs-styleguide">View on GitHub</a>
+
+          <h1 id="project_title">Angularjs-styleguide</h1>
+          <h2 id="project_tagline">AngularJS Style Guide: A starting point for AngularJS development teams to provide consistency through good practices.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/johnpapa/angularjs-styleguide/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/johnpapa/angularjs-styleguide/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="angularjs-style-guide" class="anchor" href="#angularjs-style-guide"><span class="octicon octicon-link"></span></a>AngularJS Style Guide</h1>
+
+<p><em>Opinionated AngularJS style guide for teams by <a href="//twitter.com/john_papa">@john_papa</a></em></p>
+
+<p>If you are looking for an opinionated style guide for syntax, conventions, and structuring AngularJS applications, then step right in. The styles contained here are based on on my experience with <a href="//angularjs.org">AngularJS</a>, presentations, <a href="http://pluralsight.com/training/Authors/Details/john-papa">Pluralsight training courses</a> and working in teams. </p>
+
+<p>The purpose of this style guide is to provide guidance on building AngularJS applications by showing the conventions I use and, more importantly, why I choose them. </p>
+
+<h2>
+<a name="community-awesomeness-and-credit" class="anchor" href="#community-awesomeness-and-credit"><span class="octicon octicon-link"></span></a>Community Awesomeness and Credit</h2>
+
+<p>Never work in a vacuum. I find that the AngularJS community is an incredible group who are passionate about sharing experiences. As such, a friend  and  AngularJS expert Todd Motto and I have collaborated on many styles and conventions. We agree on most, and some we diverge. I encourage you to check out <a href="https://github.com/toddmotto/angularjs-styleguide">Todd's  guidelines</a> to get a sense for his approach and how it compares.</p>
+
+<p>Many of my styles have been from the many pair programming sessions <a href="http://twitter.com/wardbell">Ward Bell</a> and I have had. While we don't always agree, my friend Ward's has certainly helped influence the ultimate evolution of this guide.</p>
+
+<h2>
+<a name="table-of-contents" class="anchor" href="#table-of-contents"><span class="octicon octicon-link"></span></a>Table of Contents</h2>
+
+<ol>
+<li><a href="#single-responsibility">Single Responsibility</a></li>
+<li><a href="#iife">IIFE</a></li>
+<li><a href="#modules">Modules</a></li>
+<li><a href="#controllers">Controllers</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#factories">Factories</a></li>
+<li><a href="#directives">Directives</a></li>
+<li><a href="#resolving-promises-for-a-controller">Resolving Promises for a Controller</a></li>
+<li><a href="#manual-dependency-injection">Manual Dependency Injection</a></li>
+<li><a href="#minification-and-annotation">Minification and Annotation</a></li>
+<li><a href="#exception-handling">Exception Handling</a></li>
+<li><a href="#naming">Naming</a></li>
+<li><a href="#application-structure-lift-principle">Application Structure LIFT Principle</a></li>
+<li><a href="#application-structure">Application Structure</a></li>
+<li><a href="#modularity">Modularity</a></li>
+<li><a href="#angular-%24-wrapper-services">Angular $ Wrapper Services</a></li>
+<li><a href="#comments">Comments</a></li>
+<li><a href="#js-hint">JSHint</a></li>
+<li><a href="#constants">Constants</a></li>
+<li><a href="#angular-docs">Angular Docs</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#license">License</a></li>
+</ol><h2>
+<a name="single-responsibility" class="anchor" href="#single-responsibility"><span class="octicon octicon-link"></span></a>Single Responsibility</h2>
+
+<ul>
+<li>
+<p><strong>Rule of 1</strong>: Define 1 component per file.  </p>
+
+<p>The following example defines the <code>app</code> module and its dependencies, defines a controller, and defines a factory all in the same file.  </p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'ngRoute'</span><span class="p">])</span>
+    <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'SomeController'</span> <span class="p">,</span> <span class="nx">SomeController</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'someFactory'</span> <span class="p">,</span> <span class="nx">someFactory</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">SomeController</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">someFactory</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+
+<p>The same components are now separated into their own files.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+
+<span class="c1">// app.module.js</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'ngRoute'</span><span class="p">]);</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+
+<span class="c1">// someController.js</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'SomeController'</span> <span class="p">,</span> <span class="nx">SomeController</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">SomeController</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+
+<span class="c1">// someFactory.js</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'someFactory'</span> <span class="p">,</span> <span class="nx">someFactory</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">someFactory</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="iife" class="anchor" href="#iife"><span class="octicon octicon-link"></span></a>IIFE</h2>
+
+<ul>
+<li>
+<p><strong>IIFE</strong>: Wrap AngularJS components in an Immediately Invoked Function Expression (IIFE). </p>
+
+<p><em>Why?</em>: An IIFE removes variables from the global scope. This helps prevent variables and function declarations from living longer than expected in the global scope, which also helps avoid variable collisions.</p>
+
+<p><em>Why?</em>: When your code is minified and bundled into a single file for deployment to a production server, you could have collisions of variables and many global variables. An IIFE protects you against both of these by providing variable scope for each file.</p>
+
+<div class="highlight highlight-javascript"><pre>  <span class="cm">/* recommended */</span>
+  <span class="c1">// logger.js</span>
+  <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">angular</span>
+      <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'logger'</span><span class="p">,</span> <span class="nx">logger</span><span class="p">);</span>
+
+    <span class="kd">function</span> <span class="nx">logger</span> <span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+  <span class="p">})();</span>
+
+  <span class="c1">// storage.js</span>
+  <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">angular</span>
+      <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'storage'</span><span class="p">,</span> <span class="nx">storage</span><span class="p">);</span>
+
+    <span class="kd">function</span> <span class="nx">storage</span> <span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+  <span class="p">})();</span>
+</pre></div>
+</li>
+<li><p>Note: For brevity only, the rest of the examples in this guide may omit the IIFE syntax. </p></li>
+</ul><h2>
+<a name="modules" class="anchor" href="#modules"><span class="octicon octicon-link"></span></a>Modules</h2>
+
+<ul>
+<li>
+<p><strong>Definitions (aka Setters)</strong>: Declare modules without a variable using the setter syntax. </p>
+
+<p><em>Why?</em>: With 1 component per file, there is rarely a need to introduce a variable for the module.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'ngAnimate'</span><span class="p">,</span>
+    <span class="s1">'ngRoute'</span><span class="p">,</span>
+    <span class="s1">'app.shared'</span>
+    <span class="s1">'app.dashboard'</span>
+<span class="p">]);</span>
+</pre></div>
+
+<p>Instead use the simple getter syntax.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'ngAnimate'</span><span class="p">,</span>
+    <span class="s1">'ngRoute'</span><span class="p">,</span>
+    <span class="s1">'app.shared'</span>
+    <span class="s1">'app.dashboard'</span>
+<span class="p">]);</span>
+</pre></div>
+</li>
+<li>
+<p><strong>Getters</strong>: When using a module, avoid using a variables and instead use   chaining with the getter syntax.</p>
+
+<p><em>Why?</em> : This produces more readable code and avoids variables collisions or leaks.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'SomeController'</span> <span class="p">,</span> <span class="nx">SomeController</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">SomeController</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'SomeController'</span> <span class="p">,</span> <span class="nx">SomeController</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">SomeController</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+</li>
+<li>
+<p><strong>Setting vs Getting</strong>: Only set once and get for all other instances.</p>
+
+<p><em>Why?</em>: A module should only be created once, then retrieved from that point and after.</p>
+
+<ul>
+<li>Use <code>angular.module('app', []);</code> to set a module.</li>
+<li>Use  <code>angular.module('app');</code> to get a module. </li>
+</ul>
+</li>
+<li>
+<p><strong>Named vs Anonymous Functions</strong>: Use named functions instead of passing an anonymous function in as a callback. </p>
+
+<p><em>Why?</em>: This produces more readable code, is much easier to debug, and reduces the amount of nested callback code.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Dashboard'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="p">});</span>
+  <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'logger'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="p">});</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+
+<span class="c1">// dashboard.js</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Dashboard'</span><span class="p">,</span> <span class="nx">Dashboard</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">Dashboard</span> <span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// logger.js</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'logger'</span><span class="p">,</span> <span class="nx">logger</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">logger</span> <span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="controllers" class="anchor" href="#controllers"><span class="octicon octicon-link"></span></a>Controllers</h2>
+
+<ul>
+<li>
+<p><strong>controllerAs View Syntax</strong>: Use the <a href="http://www.johnpapa.net/do-you-like-your-angular-controllers-with-or-without-sugar/"><code>controllerAs</code></a> syntax over the <code>classic controller with $scope</code> syntax. </p>
+
+<p><em>Why?</em>: Controllers are constructed, "newed" up, and provide a single new instance, and the <code>controllerAs</code> syntax is closer to that of a JavaScript constructor than the <code>classic $scope syntax</code>. </p>
+
+<p><em>Why?</em>: It promotes the use of binding to a "dotted" object in the View (e.g. <code>customer.name</code> instead of <code>name</code>), which is more contextual, easier to read, and avoids any reference issues that may occur without "dotting".</p>
+
+<p><em>Why?</em>: Helps avoid using <code>$parent</code> calls in Views with nested controllers.</p>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- avoid --&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">"Customer"</span><span class="nt">&gt;</span>
+  {{ name }}
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- recommended --&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">"Customer as customer"</span><span class="nt">&gt;</span>
+  {{ customer.name }}
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+</li>
+<li><p><strong>controllerAs Controller Syntax</strong>: Use the <code>controllerAs</code> syntax over the <code>classic controller with $scope</code> syntax. </p></li>
+<li>
+<p>The <code>controllerAs</code> syntax uses <code>this</code> inside controllers which gets bound to <code>$scope</code></p>
+
+<p><em>Why?</em>: <code>controllerAs</code> is syntactic sugar over <code>$scope</code>. You can still bind to the View and still access <code>$scope</code> methods.  </p>
+
+<p><em>Why?</em>: Helps avoid the temptation of using <code>$scope</code> methods inside a controller when it may otherwise be better to avoid them or move them to a factory. Consider using <code>$scope</code> in a factory, or if in a controller just when needed. For example when publishing and subscribing events using <a href="https://docs.angularjs.org/api/ng/type/%24rootScope.Scope#%24emit"><code>$emit</code></a>, <a href="https://docs.angularjs.org/api/ng/type/%24rootScope.Scope#%24broadcast"><code>$broadcast</code></a>, or <a href="https://docs.angularjs.org/api/ng/type/%24rootScope.Scope#%24on"><code>$on</code></a> consider moving these uses to a factory and invoke form the controller. </p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">function</span> <span class="nx">Customer</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="nx">$scope</span><span class="p">.</span><span class="nx">sendMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended - but see next section */</span>
+<span class="kd">function</span> <span class="nx">Customer</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">sendMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+<li>
+<p><strong>controllerAs with vm</strong>: Use a capture variable for <code>this</code> when using the <code>controllerAs</code> syntax. Choose a consistent variable name such as <code>vm</code>, which stands for ViewModel.</p>
+
+<p><em>Why?</em>: The <code>this</code> keyword is contextual and when used within a function inside a controller may change its context. Capturing the context of <code>this</code> avoids encountering this problem.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">function</span> <span class="nx">Customer</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">sendMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="kd">function</span> <span class="nx">Customer</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">sendMessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+<li>
+<p>Note: You can avoid any <a href="http://www.jshint.com/">jshint</a> warnings by placing the comment below above the line of code. </p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* jshint validthis: true */</span>
+<span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</pre></div>
+</li>
+<li>
+<p><strong>Bindable Members Up Top</strong>: Place bindable members at the top of the controller, alphabetized, and not spread through the controller code.</p>
+
+<p><em>Why?</em>: Placing bindable members at the top makes it easy to read and helps you instantly identify which members of the controller can be bound and used in the View. </p>
+
+<p><em>Why?</em>: Setting anonymous functions inline can be easy, but when those functions are more than 1 line of code they can reduce the readability. Defining the functions below the bindable members (the functions will be hoisted) moves the implementation details down, keeps the bindable members up top, and makes it easier to read. </p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">function</span> <span class="nx">Sessions</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">gotoSession</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="cm">/* ... */</span>
+    <span class="p">};</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">refresh</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="cm">/* ... */</span>
+    <span class="p">};</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">search</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="cm">/* ... */</span>
+    <span class="p">};</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">sessions</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="s1">'Sessions'</span><span class="p">;</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="kd">function</span> <span class="nx">Sessions</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">gotoSession</span> <span class="o">=</span> <span class="nx">gotoSession</span><span class="p">;</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">refresh</span> <span class="o">=</span> <span class="nx">refresh</span><span class="p">;</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">search</span> <span class="o">=</span> <span class="nx">search</span><span class="p">;</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">sessions</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="s1">'Sessions'</span><span class="p">;</span>
+
+    <span class="c1">////////////</span>
+
+    <span class="kd">function</span> <span class="nx">gotoSession</span><span class="p">()</span> <span class="p">{</span>
+      <span class="cm">/* */</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">refresh</span><span class="p">()</span> <span class="p">{</span>
+      <span class="cm">/* */</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">search</span><span class="p">()</span> <span class="p">{</span>
+      <span class="cm">/* */</span>
+    <span class="p">}</span>
+</pre></div>
+</li>
+<li>
+<p><strong>Defer Controller Logic</strong>: Defer logic in a controller by delegating to services and factories.</p>
+
+<p><em>Why?</em>: Logic may be reused by multiple controllers when placed within a service and exposed via a function.</p>
+
+<p><em>Why?</em>: Logic in a service can more easily be isolated in a unit test, while the calling logic in the controller can be easily mocked.</p>
+
+<p><em>Why?</em>: Removes dependencies and hides implementations details from the controller.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">function</span> <span class="nx">Order</span> <span class="p">(</span><span class="nx">$http</span><span class="p">,</span> <span class="nx">$q</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">checkCredit</span> <span class="o">=</span> <span class="nx">checkCredit</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">checkCredit</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="kd">var</span> <span class="nx">orderTotal</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">total</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">$http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'api/creditcheck'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">remaining</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">remaining</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">$q</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="o">!!</span><span class="p">(</span><span class="nx">remaining</span> <span class="o">&gt;</span> <span class="nx">orderTotal</span><span class="p">));</span>
+    <span class="p">});</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="kd">function</span> <span class="nx">Order</span> <span class="p">(</span><span class="nx">creditService</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">checkCredit</span> <span class="o">=</span> <span class="nx">checkCredit</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">checkCredit</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="k">return</span> <span class="nx">creditService</span><span class="p">.</span><span class="nx">check</span><span class="p">();</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+<li>
+<p><strong>Assigning Controllers</strong>: When a controller must be paired with a view and either component may be re-used by other controllers or views, define controllers along with their routes. </p>
+
+<ul>
+<li>Note: If a View is loaded via another means besides a route, then use the <code>ng-controller="Avengers as vm"</code> syntax. </li>
+</ul>
+<p><em>Why?</em>: Pairing the controller in the route allows different routes to invoke different pairs of controllers and views. When controllers are assigned in the view using <a href="https://docs.angularjs.org/api/ng/directive/ngController"><code>ng-controller</code></a>, that view is always associated with the same controller.</p>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="cm">/* avoid - when using with a route and dynamic pairing is desired */</span>
+
+<span class="c1">// route-config.js</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">config</span> <span class="p">(</span><span class="nx">$routeProvider</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$routeProvider</span>
+    <span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">'/avengers'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">'avengers.html'</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- avengers.html --&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">"Avengers as vm"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+
+<span class="c1">// route-config.js</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">config</span> <span class="p">(</span><span class="nx">$routeProvider</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$routeProvider</span>
+    <span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">'/avengers'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">'avengers.html'</span><span class="p">,</span>
+      <span class="nx">controller</span><span class="o">:</span> <span class="s1">'Avengers'</span><span class="p">,</span>
+      <span class="nx">controllerAs</span><span class="o">:</span> <span class="s1">'vm'</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- avengers.html --&gt;</span>
+<span class="nt">&lt;div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="services" class="anchor" href="#services"><span class="octicon octicon-link"></span></a>Services</h2>
+
+<ul>
+<li><p><strong>Singletons</strong>: Services are instantiated with the <code>new</code> keyword, use <code>this</code> for public methods and variables. Can also use a factory, which I recommend for consistency. </p></li>
+<li>
+<p>Note: <a href="https://docs.angularjs.org/guide/services">All AngularJS services are singletons</a>. This means that there is only one instance of a given service per injector.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// service</span>
+
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">service</span><span class="p">(</span><span class="s1">'logger'</span><span class="p">,</span> <span class="nx">logger</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">logger</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">logError</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* */</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// factory</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'logger'</span><span class="p">,</span> <span class="nx">logger</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">logger</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="nx">logError</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+      <span class="cm">/* */</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="factories" class="anchor" href="#factories"><span class="octicon octicon-link"></span></a>Factories</h2>
+
+<ul>
+<li><p><strong>Single Responsibility</strong>: Factories should have a <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">single responsibility</a>, that is encapsulated by its context. Once a factory begins to exceed that singular purpose, a new factory should be created.</p></li>
+<li><p><strong>Singletons</strong>: Factories are singletons and return an object that contains the members of the service.</p></li>
+<li><p>Note: <a href="https://docs.angularjs.org/guide/services">All AngularJS services are singletons</a>.</p></li>
+<li>
+<p><strong>Public Members Up Top</strong>: Expose the callable members of the service (it's interface) at the top, using a technique derived from the <a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#revealingmodulepatternjavascript">Revealing Module Pattern</a>. </p>
+
+<p><em>Why?</em>: Placing the callable members at the top makes it easy to read and helps you instantly identify which members of the service can be called and must be unit tested (and/or mocked). </p>
+
+<p><em>Why?</em>: This is especially helpful when the file gets longer as it helps avoid the need to scroll to see what is exposed.</p>
+
+<p><em>Why?</em>: Setting functions as you go can be easy, but when those functions are more than 1 line of code they can reduce the readability and cause more scrolling. Defining the callable interface via the returned service moves the implementation details down, keeps the callable interface up top, and makes it easier to read.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">function</span> <span class="nx">dataService</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">someValue</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">save</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="cm">/* */</span>
+  <span class="p">};</span>
+  <span class="kd">function</span> <span class="nx">validate</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="cm">/* */</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="nx">save</span><span class="o">:</span> <span class="nx">save</span><span class="p">,</span>
+    <span class="nx">someValue</span><span class="o">:</span> <span class="nx">someValue</span><span class="p">,</span>
+    <span class="nx">validate</span><span class="o">:</span> <span class="nx">validate</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="kd">function</span> <span class="nx">dataService</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">someValue</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">save</span><span class="o">:</span> <span class="nx">save</span><span class="p">,</span>
+    <span class="nx">someValue</span><span class="o">:</span> <span class="nx">someValue</span><span class="p">,</span>
+    <span class="nx">validate</span><span class="o">:</span> <span class="nx">validate</span>
+  <span class="p">};</span>
+  <span class="k">return</span> <span class="nx">service</span><span class="p">;</span>
+
+  <span class="c1">////////////</span>
+  <span class="kd">function</span> <span class="nx">save</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="cm">/* */</span>
+  <span class="p">};</span>
+
+  <span class="kd">function</span> <span class="nx">validate</span> <span class="p">()</span> <span class="p">{</span> 
+    <span class="cm">/* */</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+<li><p>This way bindings are mirrored across the host object, primitive values cannot update alone using the revealing module pattern</p></li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="directives" class="anchor" href="#directives"><span class="octicon octicon-link"></span></a>Directives</h2>
+
+<ul>
+<li>
+<p><strong>Limit 1 Per File</strong>: Create one directive per file. Name the file for the directive. </p>
+
+<p><em>Why?</em>: It is easy to mash all the directives in one file, but difficult to then break those out so some are shared across apps, some across modules, some just for one module. Also easier to maintain.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app.widgets'</span><span class="p">)</span>
+
+  <span class="cm">/* order directive that is specific to the order module */</span>
+  <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'orderCalendarRange'</span><span class="p">,</span> <span class="nx">orderCalendarRange</span><span class="p">)</span>
+
+  <span class="cm">/* sales directive that can be used anywhere across the sales app */</span>
+  <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'salesCustomerInfo'</span><span class="p">,</span> <span class="nx">salesCustomerInfo</span><span class="p">);</span>
+
+  <span class="cm">/* spinner directive that can be used anywhere across apps */</span>
+  <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'sharedSpinner'</span><span class="p">,</span> <span class="nx">sharedSpinner</span><span class="p">);</span>
+
+  <span class="cm">/* implementation details */</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @desc order directive that is specific to the order module at a company named Acme</span>
+<span class="cm"> * @file calendarRange.directive.js</span>
+<span class="cm"> * @example &lt;div acme-order-calendar-range&gt;&lt;/div&gt;</span>
+<span class="cm"> */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'sales.order'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'acmeOrderCalendarRange'</span><span class="p">,</span> <span class="nx">orderCalendarRange</span><span class="p">)</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @desc spinner directive that can be used anywhere across the sales app at a company named Acme</span>
+<span class="cm"> * @file customerInfo.directive.js</span>
+<span class="cm"> * @example &lt;div acme-sales-customer-info&gt;&lt;/div&gt;</span>
+<span class="cm"> */</span>    
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'sales.widgets'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'acmeSalesCustomerInfo'</span><span class="p">,</span> <span class="nx">salesCustomerInfo</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @desc spinner directive that can be used anywhere across apps at a company named Acme</span>
+<span class="cm"> * @file spinner.directive.js</span>
+<span class="cm"> * @example &lt;div acme-shared-spinner&gt;&lt;/div&gt;</span>
+<span class="cm"> */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'shared.widgets'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'acmeSharedSpinner'</span><span class="p">,</span> <span class="nx">sharedSpinner</span><span class="p">);</span>
+
+  <span class="cm">/* implementation details */</span>
+</pre></div>
+
+<ul>
+<li>Note: There are many naming options for directives, especially since they can be used in narrow or wide scopes. Choose one the makes the directive and it's file name distinct and clear. Some examples are below, but see the naming section for more recommendations.</li>
+</ul>
+</li>
+<li>
+<p><strong>Limit DOM Manipulation</strong>: When manipulating the DOM directly, use a directive. If alternative ways can be used such as using CSS to set styles or the <a href="https://docs.angularjs.org/api/ngAnimate">animation services</a>, Angular templating, <a href="https://docs.angularjs.org/api/ng/directive/ngShow"><code>ngShow</code></a> or <a href="https://docs.angularjs.org/api/ng/directive/ngHide"><code>ngHide</code></a>, then use those instead. For example, if the directive simply hide and shows, use ngHide/ngShow, but if the directive does more, combining hide and show inside a directive may improve performance as it reduces watchers. </p>
+
+<p><em>Why?</em>: DOM manipulation can be difficult to test, debug, and there are often better ways (e.g. CSS, animations, templating)</p>
+</li>
+<li>
+<p><strong>Restrict to Elements and Attributes</strong>: When creating a directive that makes sense as a standalone element, allow restrict <code>E</code> (custom element) and optionally restrict <code>A</code> (custom attribute). Generally, if it could be its own control, <code>E</code> is appropriate. General guideline is allow <code>EA</code> but lean towards implementing as an element when its standalone and as an attribute when it enhances its existing DOM element.</p>
+
+<p><em>Why?</em>: It makes sense.</p>
+
+<p><em>Why?</em>: While we can allow the directive to be used as a class, if the directive is truly acting as an element it makes more sense as an element or at least as an attribute.</p>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- avoid --&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"my-calendar-range"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app.widgets'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'myCalendarRange'</span><span class="p">,</span> <span class="nx">myCalendarRange</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">myCalendarRange</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">directive</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">link</span><span class="o">:</span> <span class="nx">link</span><span class="p">,</span>
+        <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">'/template/is/located/here.html'</span><span class="p">,</span>
+        <span class="nx">restrict</span><span class="o">:</span> <span class="s1">'C'</span>
+    <span class="p">};</span>
+    <span class="k">return</span> <span class="nx">directive</span><span class="p">;</span>
+
+    <span class="kd">function</span> <span class="nx">link</span><span class="p">(</span><span class="nx">scope</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">)</span> <span class="p">{</span>
+      <span class="cm">/* */</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- recommended --&gt;</span>
+<span class="nt">&lt;my-calendar-range&gt;&lt;/my-calendar-range&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">my-calendar-range</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app.widgets'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'myCalendarRange'</span><span class="p">,</span> <span class="nx">myCalendarRange</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">myCalendarRange</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">directive</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">link</span><span class="o">:</span> <span class="nx">link</span><span class="p">,</span>
+        <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">'/template/is/located/here.html'</span><span class="p">,</span>
+        <span class="nx">restrict</span><span class="o">:</span> <span class="s1">'EA'</span>
+    <span class="p">};</span>
+    <span class="k">return</span> <span class="nx">directive</span><span class="p">;</span>
+
+    <span class="kd">function</span> <span class="nx">link</span><span class="p">(</span><span class="nx">scope</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">)</span> <span class="p">{</span>
+      <span class="cm">/* */</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="resolving-promises-for-a-controller" class="anchor" href="#resolving-promises-for-a-controller"><span class="octicon octicon-link"></span></a>Resolving Promises for a Controller</h2>
+
+<ul>
+<li>
+<p><strong>Controller Activation Promises</strong>: Resolve start-up logic for a controller in an <code>activate</code> function.</p>
+
+<p><em>Why?</em>: Placing start-up logic in a consistent place in the controller makes it easier to locate, more consistent to test, and helps avoid spreading out the activation logic across the controller.</p>
+
+<ul>
+<li>Note: If you need to conditionally cancel the route before you start use the controller, use a route resolve instead.</li>
+</ul>
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="kd">function</span> <span class="nx">Avengers</span><span class="p">(</span><span class="nx">dataservice</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">avengers</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="s1">'Avengers'</span><span class="p">;</span>
+
+    <span class="nx">dataservice</span><span class="p">.</span><span class="nx">getAvengers</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">vm</span><span class="p">.</span><span class="nx">avengers</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">avengers</span><span class="p">;</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="kd">function</span> <span class="nx">Avengers</span><span class="p">(</span><span class="nx">dataservice</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">avengers</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="s1">'Avengers'</span><span class="p">;</span>
+
+    <span class="nx">activate</span><span class="p">();</span>
+
+    <span class="c1">////////////</span>
+
+    <span class="kd">function</span> <span class="nx">activate</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">dataservice</span><span class="p">.</span><span class="nx">getAvengers</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">vm</span><span class="p">.</span><span class="nx">avengers</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">avengers</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+<li>
+<p><strong>Route Resolve Promises</strong>: When a controller depends on a promise to be resolved, resolve those dependencies in the <code>$routeProvider</code> before the controller logic is executed. If you need to conditionally cancel a route before the controller is activated, use a route resolver.</p>
+
+<p><em>Why?</em>: A controller may require data before it loads. That data may come from a promise via a custom factory or <a href="https://docs.angularjs.org/api/ng/service/%24http">$http</a>. Using a <a href="https://docs.angularjs.org/api/ngRoute/provider/%24routeProvider">route resolve</a> allows the promise to resolve before the controller logic executes, so it might take action based on that data from the promise.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Avengers'</span><span class="p">,</span> <span class="nx">Avengers</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">Avengers</span> <span class="p">(</span><span class="nx">movieService</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+  <span class="c1">// unresolved</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">movies</span><span class="p">;</span>
+  <span class="c1">// resolved asynchronously</span>
+  <span class="nx">movieService</span><span class="p">.</span><span class="nx">getMovies</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">vm</span><span class="p">.</span><span class="nx">movies</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">movies</span><span class="p">;</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* better */</span>
+
+<span class="c1">// route-config.js</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">config</span> <span class="p">(</span><span class="nx">$routeProvider</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$routeProvider</span>
+    <span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">'/avengers'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">'avengers.html'</span><span class="p">,</span>
+      <span class="nx">controller</span><span class="o">:</span> <span class="s1">'Avengers'</span><span class="p">,</span>
+      <span class="nx">controllerAs</span><span class="o">:</span> <span class="s1">'vm'</span><span class="p">,</span>
+      <span class="nx">resolve</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">moviesPrepService</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">movieService</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">movieService</span><span class="p">.</span><span class="nx">getMovies</span><span class="p">();</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="c1">// avengers.js</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Avengers'</span><span class="p">,</span> <span class="nx">Avengers</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">Avengers</span> <span class="p">(</span><span class="nx">moviesPrepService</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">movies</span> <span class="o">=</span> <span class="nx">moviesPrepService</span><span class="p">.</span><span class="nx">movies</span><span class="p">;</span>
+<span class="p">}</span>
+
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="manual-dependency-injection" class="anchor" href="#manual-dependency-injection"><span class="octicon octicon-link"></span></a>Manual Dependency Injection</h2>
+
+<ul>
+<li>
+<p><strong>UnSafe from Minification</strong>: Avoid using the shortcut syntax of declaring dependencies without using a minification-safe approach.</p>
+
+<p><em>Why?</em>: The parameters to the component (e.g. controller, factory, etc) will be converted to mangled variables. For example, <code>common</code> and <code>dataservice</code> may become <code>a</code> or <code>b</code> and not be found by AngularJS.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid - not minification-safe*/</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Dashboard'</span><span class="p">,</span> <span class="nx">Dashboard</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">Dashboard</span><span class="p">(</span><span class="nx">common</span><span class="p">,</span> <span class="nx">dataservice</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+
+<ul>
+<li>This code may produce mangled variables when minified and thus cause runtime errors.</li>
+</ul>
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid - not minification-safe*/</span>
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">).</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Dashboard'</span><span class="p">,</span> <span class="nx">d</span><span class="p">);</span><span class="kd">function</span> <span class="nx">d</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</pre></div>
+</li>
+<li>
+<p><strong>Manually Identify Dependencies</strong>: Use $inject to manually identify your dependencies for AngularJS components.</p>
+
+<p><em>Why?</em>: This technique mirrors the technique used by <a href="https://github.com/olov/ng-annotate"><code>ng-annotate</code></a>, which I recommend for automating the creation of minification safe dependencies. If <code>ng-annotate</code> detects injection has already been made, it will not duplicate it.</p>
+
+<p><em>Why?</em>: This safeguards your dependencies from being vulernable to minification issues when parameters may be mangled. For example, <code>common</code> and <code>dataservice</code> may become <code>a</code> or <code>b</code> and not be found by AngularJS.</p>
+
+<p><em>Why?</em>: Avoid creating inline dependencies as long lists can be difficult to read in the array. Also it can be confusing that the array is a series of strings while the last item is the component's function. </p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* avoid */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Dashboard'</span><span class="p">,</span> 
+    <span class="p">[</span><span class="s1">'$location'</span><span class="p">,</span> <span class="s1">'$routeParams'</span><span class="p">,</span> <span class="s1">'common'</span><span class="p">,</span> <span class="s1">'dataservice'</span><span class="p">,</span> <span class="nx">Dashboard</span><span class="p">]);</span>
+
+<span class="kd">function</span> <span class="nx">Dashboard</span><span class="p">(</span><span class="nx">$location</span><span class="p">,</span> <span class="nx">$routeParams</span><span class="p">,</span> <span class="nx">common</span><span class="p">,</span> <span class="nx">dataservice</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/* recommended */</span>
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Dashboard'</span><span class="p">,</span> <span class="nx">Dashboard</span><span class="p">);</span>
+
+<span class="nx">Dashboard</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'$location'</span><span class="p">,</span> <span class="s1">'$routeParams'</span><span class="p">,</span> <span class="s1">'common'</span><span class="p">,</span> <span class="s1">'dataservice'</span><span class="p">];</span>
+
+<span class="kd">function</span> <span class="nx">Dashboard</span><span class="p">(</span><span class="nx">$location</span><span class="p">,</span> <span class="nx">$routeParams</span><span class="p">,</span> <span class="nx">common</span><span class="p">,</span> <span class="nx">dataservice</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="minification-and-annotation" class="anchor" href="#minification-and-annotation"><span class="octicon octicon-link"></span></a>Minification and Annotation</h2>
+
+<ul>
+<li>
+<p><strong>ng-annotate</strong>: Use <a href="//github.com/olov/ng-annotate">ng-annotate</a> for <a href="http://gulpjs.com">Gulp</a> or <a href="http://gruntjs.com">Grunt</a> and comment functions that need automated dependency injection using <code>/** @ngInject */</code></p>
+
+<p><em>Why?</em>: This safeguards your code from any dependencies that may not be using minification-safe practices.</p>
+
+<p><em>Why?</em>: <a href="https://github.com/btford/ngmin"><code>ng-min</code></a> is deprecated </p>
+
+<ul>
+<li>The following code is not using minification safe dependencies.</li>
+</ul>
+<div class="highlight highlight-javascript"><pre><span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Avengers'</span><span class="p">,</span> <span class="nx">Avengers</span><span class="p">);</span>
+
+<span class="cm">/* @ngInject */</span>
+<span class="kd">function</span> <span class="nx">Avengers</span> <span class="p">(</span><span class="nx">storageService</span><span class="p">,</span> <span class="nx">avengerService</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">heroSearch</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">storeHero</span> <span class="o">=</span> <span class="nx">storeHero</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">storeHero</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">hero</span> <span class="o">=</span> <span class="nx">avengerService</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">vm</span><span class="p">.</span><span class="nx">heroSearch</span><span class="p">);</span>
+    <span class="nx">storageService</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="nx">hero</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<ul>
+<li>When the above code is run through ng-annotate it will produces the following output with the <code>$inject</code> annotation and become minification-safe.</li>
+</ul>
+<div class="highlight highlight-javascript"><pre><span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'Avengers'</span><span class="p">,</span> <span class="nx">Avengers</span><span class="p">);</span>
+
+<span class="cm">/* @ngInject */</span>
+<span class="kd">function</span> <span class="nx">Avengers</span> <span class="p">(</span><span class="nx">storageService</span><span class="p">,</span> <span class="nx">avengerService</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">heroSearch</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="nx">vm</span><span class="p">.</span><span class="nx">storeHero</span> <span class="o">=</span> <span class="nx">storeHero</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">storeHero</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">hero</span> <span class="o">=</span> <span class="nx">avengerService</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">vm</span><span class="p">.</span><span class="nx">heroSearch</span><span class="p">);</span>
+    <span class="nx">storageService</span><span class="p">.</span><span class="nx">save</span><span class="p">(</span><span class="nx">hero</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="nx">hero</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">Avengers</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'storageService'</span><span class="p">,</span> <span class="s1">'avengerService'</span><span class="p">];</span>
+
+</pre></div>
+
+<ul>
+<li><p>Note: If <code>ng-annotate</code> detects injection has already been made (e.g. <code>@ngInject</code> was detected), it will not duplicate the <code>$inject</code> code.</p></li>
+<li><p>Note: Starting from AngularJS 1.3 use the <a href="https://docs.angularjs.org/api/ng/directive/ngApp"><code>ngApp</code></a> directive's <code>ngStrictDi</code> parameter. When present the injector will be created in "strict-di" mode causing the application to fail to invoke functions which do not use explicit function annotation (these may not be minification safe). Debugging info will be logged to the console to help track down the offending code.
+<code>&lt;body ng-app="APP" ng-strict-di&gt;</code></p></li>
+</ul>
+</li>
+<li>
+<p><strong>Use Gulp or Grunt for ng-annotate</strong>: Use <a href="https://www.npmjs.org/package/gulp-ng-annotate">gulp-ng-annotate</a> or <a href="https://www.npmjs.org/package/grunt-ng-annotate">grunt-ng-annotate</a> in an automated build task. Inject <code>/* @ngInject */</code> prior to any function that has dependencies.</p>
+
+<p><em>Why?</em>: ng-annotate will catch most dependencies, but it sometimes requires hints using the <code>/* @ngInject */</code> syntax.</p>
+
+<ul>
+<li>The following code is an example of a gulp task using ngAnnotate</li>
+</ul>
+<div class="highlight highlight-javascript"><pre><span class="nx">gulp</span><span class="p">.</span><span class="nx">task</span><span class="p">(</span><span class="s1">'js'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'jshint'</span><span class="p">],</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">source</span> <span class="o">=</span> <span class="nx">pkg</span><span class="p">.</span><span class="nx">paths</span><span class="p">.</span><span class="nx">js</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">gulp</span><span class="p">.</span><span class="nx">src</span><span class="p">(</span><span class="nx">source</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">sourcemaps</span><span class="p">.</span><span class="nx">init</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">concat</span><span class="p">(</span><span class="s1">'all.min.js'</span><span class="p">,</span> <span class="p">{</span><span class="nx">newLine</span><span class="o">:</span> <span class="s1">';'</span><span class="p">}))</span>
+        <span class="c1">// Annotate before uglify so the code get's min'd properly.</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">ngAnnotate</span><span class="p">({</span>
+            <span class="c1">// true helps add where @ngInject is not used. It infers.</span>
+            <span class="c1">// Doesn't work with resolve, so we must be explicit there</span>
+            <span class="nx">add</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">}))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">bytediff</span><span class="p">.</span><span class="nx">start</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">uglify</span><span class="p">({</span><span class="nx">mangle</span><span class="o">:</span> <span class="kc">true</span><span class="p">}))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">bytediff</span><span class="p">.</span><span class="nx">stop</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">sourcemaps</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">'./'</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">gulp</span><span class="p">.</span><span class="nx">dest</span><span class="p">(</span><span class="nx">pkg</span><span class="p">.</span><span class="nx">paths</span><span class="p">.</span><span class="nx">dev</span><span class="p">));</span>
+<span class="p">});</span>
+
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="exception-handling" class="anchor" href="#exception-handling"><span class="octicon octicon-link"></span></a>Exception Handling</h2>
+
+<ul>
+<li>
+<p><strong>decorators</strong>: Use a <a href="https://docs.angularjs.org/api/auto/service/%24provide#decorator">decorator</a>, at config time using the <a href="https://docs.angularjs.org/api/auto/service/%24provide"><code>$provide</code></a> service, on the <a href="https://docs.angularjs.org/api/ng/service/%24exceptionHandler"><code>$exceptionHandler</code></a> service to perform custom actions when exceptions occur.</p>
+
+<p><em>Why?</em>: Provides a consistent manner in which to customize how exceptions are handled for development-time or run-time.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">angular</span>
+    <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app.exception'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">config</span><span class="p">([</span><span class="s1">'$provide'</span><span class="p">,</span> <span class="nx">exceptionConfig</span><span class="p">]);</span>
+
+<span class="kd">function</span> <span class="nx">exceptionConfig</span><span class="p">(</span><span class="nx">$provide</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$provide</span><span class="p">.</span><span class="nx">decorator</span><span class="p">(</span><span class="s1">'$exceptionHandler'</span><span class="p">,</span>
+        <span class="p">[</span><span class="s1">'$delegate'</span><span class="p">,</span> <span class="s1">'$log'</span><span class="p">,</span> <span class="nx">extendExceptionHandler</span><span class="p">]);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">extendExceptionHandler</span><span class="p">(</span><span class="nx">$delegate</span><span class="p">,</span> <span class="nx">$log</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">exception</span><span class="p">,</span> <span class="nx">cause</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$delegate</span><span class="p">(</span><span class="nx">exception</span><span class="p">,</span> <span class="nx">cause</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">errorData</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nx">exception</span><span class="o">:</span> <span class="nx">exception</span><span class="p">,</span>
+            <span class="nx">cause</span><span class="o">:</span> <span class="nx">cause</span>
+        <span class="p">};</span>
+        <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="s1">'ERROR PREFIX'</span> <span class="o">+</span> <span class="nx">exception</span><span class="p">.</span><span class="nx">message</span><span class="p">;</span>
+        <span class="nx">$log</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">msg</span><span class="p">,</span> <span class="nx">errorData</span><span class="p">);</span>
+
+        <span class="c1">// Log during dev with http://toastrjs.com</span>
+        <span class="c1">// or any other technique you prefer</span>
+        <span class="nx">toastr</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="naming" class="anchor" href="#naming"><span class="octicon octicon-link"></span></a>Naming</h2>
+
+<p>TODO</p>
+
+<p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="application-structure-lift-principle" class="anchor" href="#application-structure-lift-principle"><span class="octicon octicon-link"></span></a>Application Structure LIFT Principle</h2>
+
+<ul>
+<li>
+<p><strong>LIFT</strong>: Structure your app such that you can <code>L</code>ocate your code quickly, <code>I</code>dentify the code at a glance, keep a <code>F</code>lattest structure you can, and <code>T</code>ry to stay DRY. The structure should follow these 4 basic guidelines. </p>
+
+<p><em>Why LIFT?</em>: Provides a consistent structure that scales well, is modular, and makes it easier to increase developer efficiency by finding code quickly. Another way to check your app structure is to ask yourself: How quickly can you open and work in all of the related files for a feature?</p>
+
+<p>When I find my structure is not feeling comfortable, I go back and revisit these LIFT guidelines</p>
+
+<ol>
+<li>
+<code>L</code>ocating our code is easy</li>
+<li>
+<code>I</code>dentify code at a glance</li>
+<li>
+<code>F</code>lat structure as long as we can</li>
+<li>
+<code>T</code>ry to stay DRY (Don’t Repeat Yourself) or T-DRY</li>
+</ol>
+</li>
+</ul><ul>
+<li>
+<p><strong>Locate</strong>: Make locating your code intuitive, simple and fast.</p>
+
+<p><em>Why?</em>: I find this to be super important for a project. If the team cannot find the files they need to work on quickly, that needs to change. You may not know the file name or where its related files are, so putting them in the most intuitive locations and near each other saves a ton of time. A descriptive folder structure can help with this.</p>
+
+<pre><code>/bower_components
+/client
+  /app
+    /avengers
+    /blocks
+      /exception
+      /logger
+    /core
+    /dashboard
+    /data
+    /layout
+    /widgets
+  /content
+  index.html
+.bower.json
+</code></pre>
+</li>
+<li>
+<p><strong>Identify</strong>: When you look at a file you should instantly know what it contains and represents.</p>
+
+<p><em>Why?</em>: You spend less time hunting and pecking for code, and become more efficient. If this means you want longer file names, then so be it. Be descriptive with file names and keeping that contents of the file to exactly 1 thing. Avoid files with multiple controllers, multiple services, or a mixture. There are deviations of the 1 per file rule when I have a set of very small features that are all related to each other, they are still easily identifiable. If not, 1 per file.</p>
+</li>
+<li>
+<p><strong>Flat</strong>: Keep a flat folder structure as long as possible. When you get to 7+ files, begin considering separation.</p>
+
+<p><em>Why?</em>: Nobody wants to search 7 levels of folders to find a file. Think about menus on web sites … anything deeper than 2 should take serious consideration. In a folder structure there is no hard and fast number rule, but when a folder has 7-10 files, that may be time to create subfolders. Base it on your comfort level. Use a flatter structure until there is an obvious value (to help the rest of LIFT) in creating a new folder.</p>
+</li>
+<li>
+<p><strong>T-DRY (Try to Stick to DRY)</strong>: Be DRY, but don't go nuts and sacrfice readability.</p>
+
+<p><em>Why?</em>: Being DRY is important, but not crucial if it sacrifices the others in LIFT, which is why I call it T-DRY. I don’t want to type session-view.html for a view because, well, it’s obviously a view. If it is not obvious or by convention, then I name it. </p>
+
+<p><em>Why?</em>: Being DRY is important, but not crucial if it sacrifices the others in LIFT, which is why I call it T-DRY. I don’t want to type session-view.html for a view because, well, it’s obviously a view. If it is not obvious or by convention, then I name it.</p>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="application-structure" class="anchor" href="#application-structure"><span class="octicon octicon-link"></span></a>Application Structure</h2>
+
+<p>TODO</p>
+
+<p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="modularity" class="anchor" href="#modularity"><span class="octicon octicon-link"></span></a>Modularity</h2>
+
+<p>TODO</p>
+
+<p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="angular--wrapper-services" class="anchor" href="#angular--wrapper-services"><span class="octicon octicon-link"></span></a>Angular $ Wrapper Services</h2>
+
+<ul>
+<li>
+<p><strong>$document and $window</strong>: Use <a href="https://docs.angularjs.org/api/ng/service/%24document"><code>$document</code></a> and <a href="https://docs.angularjs.org/api/ng/service/%24window"><code>$window</code></a> instead of <code>document</code> and <code>window</code>.</p>
+
+<p><em>Why?</em>: These services are wrapped by Angular and more easily testable than using document and window in tests. This helps you avoid having to mock document and window yourself.</p>
+</li>
+<li>
+<p><strong>$timeout and $interval</strong>: Use <a href="https://docs.angularjs.org/api/ng/service/%24timeout"><code>$timeout</code></a> and <a href="https://docs.angularjs.org/api/ng/service/%24interval"><code>$interval</code></a> instead of <code>setTimeout</code> and <code>setInterval</code> .</p>
+
+<p><em>Why?</em>: These services are wrapped by Angular and more easily testable and handle AngularJS's digest cycle thus keeping data binding in sync.</p>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="comments" class="anchor" href="#comments"><span class="octicon octicon-link"></span></a>Comments</h2>
+
+<ul>
+<li>
+<p><strong>jsDoc</strong>: If planning to produce documentation, use <a href="http://usejsdoc.org/"><code>jsDoc</code></a> syntax to document function names, description, params and returns</p>
+
+<p><em>Why?</em>: You can generate (and regenerate) documentation from your code, instead of writing it from scratch.</p>
+
+<p><em>Why?</em>: Provides consistency using a common industry tool.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="s1">'logger'</span><span class="p">,</span> <span class="nx">logger</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @name logger</span>
+<span class="cm"> * @desc Application wide logger</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">logger</span> <span class="p">(</span><span class="nx">$log</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">logError</span><span class="o">:</span> <span class="nx">logError</span>
+  <span class="p">};</span>
+  <span class="k">return</span> <span class="nx">service</span><span class="p">;</span>
+
+  <span class="c1">////////////</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * @name logError</span>
+<span class="cm">   * @desc Logs errors</span>
+<span class="cm">   * @param {String} msg Message to log </span>
+<span class="cm">   * @returns {String}</span>
+<span class="cm">   */</span>
+  <span class="kd">function</span> <span class="nx">logError</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">loggedMsg</span> <span class="o">=</span> <span class="s1">'Error: '</span> <span class="o">+</span> <span class="nx">msg</span><span class="p">;</span>
+    <span class="nx">$log</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">loggedMsg</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">loggedMsg</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="js-hint" class="anchor" href="#js-hint"><span class="octicon octicon-link"></span></a>JS Hint</h2>
+
+<ul>
+<li>
+<p><strong>Use an Options File</strong>: Use JS Hint for linting your JavaScript and be sure to customize the JS Hint options file and include in source control. See the <a href="http://www.jshint.com/docs/">JS Hint docs</a> for details on the options.</p>
+
+<p><em>Why?</em>: Provides a first alert prior to committing any code to source control.</p>
+
+<p><em>Why?</em>: Provides consistency across your team.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="p">{</span>
+    <span class="s2">"bitwise"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"camelcase"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"curly"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"eqeqeq"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"es3"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"forin"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"freeze"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"immed"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"indent"</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">"latedef"</span><span class="o">:</span> <span class="s2">"nofunc"</span><span class="p">,</span>
+    <span class="s2">"newcap"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"noarg"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"noempty"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"nonbsp"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"nonew"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"plusplus"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"quotmark"</span><span class="o">:</span> <span class="s2">"single"</span><span class="p">,</span>
+    <span class="s2">"undef"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"unused"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"strict"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"maxparams"</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">"maxdepth"</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">"maxstatements"</span><span class="o">:</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="s2">"maxcomplexity"</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="s2">"maxlen"</span><span class="o">:</span> <span class="mi">120</span><span class="p">,</span>
+
+    <span class="s2">"asi"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"boss"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"debug"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"eqnull"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"esnext"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"evil"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"expr"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"funcscope"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"globalstrict"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"iterator"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"lastsemic"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"laxbreak"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"laxcomma"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"loopfunc"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"maxerr"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"moz"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"multistr"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"notypeof"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"proto"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"scripturl"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"shadow"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"sub"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"supernew"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"validthis"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">"noyield"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="s2">"browser"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"node"</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+
+    <span class="s2">"globals"</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">"angular"</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s2">"$"</span><span class="o">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="constants" class="anchor" href="#constants"><span class="octicon octicon-link"></span></a>Constants</h2>
+
+<ul>
+<li>
+<p><strong>Vendor Globals</strong>: Create an AngularJS Constant for vendor libraries' global variables.</p>
+
+<p><em>Why?</em>: Provides a way to inject vendor libraries that otherwise are globals. This improves code testability by allowing you to more easily know what the dependencies of your components are (avoids leaky abstractions). It also allows you to mock these dependencies, where it makes sense.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// constants.js</span>
+
+<span class="cm">/* global toastr:false, moment:false */</span>
+<span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="s1">'use strict'</span><span class="p">;</span>
+
+    <span class="nx">angular</span>
+        <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'app.core'</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">constant</span><span class="p">(</span><span class="s1">'toastr'</span><span class="p">,</span> <span class="nx">toastr</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">constant</span><span class="p">(</span><span class="s1">'moment'</span><span class="p">,</span> <span class="nx">moment</span><span class="p">);</span>
+<span class="p">})();</span>
+</pre></div>
+</li>
+</ul><p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+
+<h2>
+<a name="angularjs-docs" class="anchor" href="#angularjs-docs"><span class="octicon octicon-link"></span></a>AngularJS docs</h2>
+
+<p>For anything else, API reference, check the <a href="//docs.angularjs.org/api">Angular documentation</a>.</p>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Open an issue first to discuss potential changes/additions. If you have questions with the guide, feel free to leave them as issues in the repo. If you find a typo, create a pull request. The idea is to keep the content up to date and use github’s native feature to help tell the story with issues and PR’s, which are all searchable via google. Why? Because odds are if you have a question, someone else does too! You can learn more here at about how to contribute.</p>
+
+<p><em>By contributing to this repo you are agreeing to make your content available subject to the license of this repo.</em></p>
+
+<ul>
+<li>
+<strong>Process</strong>
+
+<ol>
+<li>Discuss the changes in an Issue. </li>
+<li>Open a Pull Request, reference the issue, and explain the change and why it adds value.</li>
+<li>The Pull Request will be evaluated and either merged or declined.</li>
+</ol>
+</li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<h4>
+<a name="the-mit-license" class="anchor" href="#the-mit-license"><span class="octicon octicon-link"></span></a>(The MIT License)</h4>
+
+<p>Copyright (c) 2014 <a href="http://johnpapa.net">John Papa</a></p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+
+<p><strong><a href="#table-of-contents">Back to top</a></strong></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Angularjs-styleguide maintained by <a href="https://github.com/johnpapa">johnpapa</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
