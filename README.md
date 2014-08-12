@@ -1,16 +1,13 @@
 # AngularJS Style Guide
 
-*Opinionated AngularJS style guide for teams by [@john_papa](//twitter.com/john_papa)*
+*Opinionated AngularJS style guide for teams by [@lodnert](//twitter.com/lodnert) , orginal from John Papa and Todd Motto, look below.*
 
-If you are looking for an opinionated style guide for syntax, conventions, and structuring AngularJS applications, then step right in. The styles contained here are based on my experience with [AngularJS](//angularjs.org), presentations, [Pluralsight training courses] (http://pluralsight.com/training/Authors/Details/john-papa) and working in teams. 
+If you are looking for an opinionated style guide for syntax, conventions, and structuring AngularJS applications, then step right in. The styles contained here are based on my experience with [AngularJS](//angularjs.org), presentations.
 
 The purpose of this style guide is to provide guidance on building AngularJS applications by showing the conventions I use and, more importantly, why I choose them. 
 
 ## Community Awesomeness and Credit
-Never work in a vacuum. I find that the AngularJS community is an incredible group who are passionate about sharing experiences. As such, a friend  and  AngularJS expert Todd Motto and I have collaborated on many styles and conventions. We agree on most, and some we diverge. I encourage you to check out [Todd's  guidelines](https://github.com/toddmotto/angularjs-styleguide) to get a sense for his approach and how it compares.
-
-Many of my styles have been from the many pair programming sessions [Ward Bell](http://twitter.com/wardbell) and I have had. While we don't always agree, my friend Ward has certainly helped influence the ultimate evolution of this guide.
-
+Thanks to John Papa (https://github.com/johnpapa/angularjs-styleguide) and Todd Motto (https://github.com/toddmotto/angularjs-styleguide), their work helped our team alot.
 
 
 ## Table of Contents
